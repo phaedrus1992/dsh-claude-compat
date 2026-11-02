@@ -7,7 +7,7 @@ All notable changes to this project are documented here. Versions follow [SemVer
 ## [Unreleased]
 
 ### Added
-- **MCP servers from every Claude Code source.** The plugin reads `managed-mcp.json` (exclusive control), `managedMcpServers`, and the local and user `mcpServers` in `.claude.json`, in Claude Code's precedence. It also honors `${VAR}` expansion, `timeout`, `headersHelper`, `disabledMcpjsonServers`, `disabledMcpServers`, and the `allowedMcpServers` and `deniedMcpServers` policy. A broken managed file fails closed, and every skipped entry or policy item gets a warning. The README lists the features DSH cannot run.
+- **MCP servers from every Claude Code source.** The plugin reads `managed-mcp.json` (exclusive control), `managedMcpServers`, and the local and user `mcpServers` in `.claude.json`, in Claude Code's precedence. It also honors `${VAR}` expansion, `timeout`, `headersHelper`, `disabledMcpjsonServers`, `disabledMcpServers`, and the `allowedMcpServers` and `deniedMcpServers` policy. A broken managed file or a malformed managed policy fails closed, and every skipped entry or policy item gets a warning. The README lists the features DSH cannot run.
 - **Claude Code location variables are honored.** `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_PLUGIN_CACHE_DIR`, `CLAUDE_CODE_PLUGIN_SEED_DIR`, `CLAUDE_CODE_PLUGIN_DIRS`, and `CLAUDE_CODE_PROJECT_DIR_NAME` now move the paths the plugin reads, as Claude Code does. Skills, rules, hooks, plugin management, and `/cc-resume` all use one resolver in `src/lib.js`. Issue #1.
 
 ### Changed
