@@ -34,7 +34,7 @@
   "license": "MIT",
   "author": "biedongbin",
   "dependencies": {
-    "yaml": "^2.0.0"
+    "yaml": "2.9.0"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "*",
