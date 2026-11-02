@@ -4,6 +4,11 @@ English | [简体中文](CHANGELOG.zh-CN.md)
 
 All notable changes to this project are documented here. Versions follow [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- **Hook handler fields.** Command hooks accept `args` (run without a shell), `if` (a permission rule such as `Bash(git *)`, for tool events), `timeout` (seconds), `async` (tool events; cannot change the decision) and `onFailure: "block"`. `${CLAUDE_PROJECT_DIR}` is expanded in commands and arguments, and set in the hook environment. Tool hook stdin carries `hook_event_name` and `cwd`. Hook entries of other handler types (`http`, `prompt`, `agent`, `mcp_tool`) are skipped with a warning. Issue #2 covers the events and handlers still missing.
+
 ## [1.0.0] — 2026-10-30
 
 ### Added

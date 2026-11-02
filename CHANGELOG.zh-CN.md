@@ -4,6 +4,11 @@
 
 本项目所有重要变更记录于此。版本遵循 [SemVer](https://semver.org/)。
 
+## [Unreleased]
+
+### 新增
+- **Hook 处理器字段。** 命令型 hook 支持 `args`（不经过 shell 直接执行）、`if`（权限规则，如 `Bash(git *)`，仅用于工具事件）、`timeout`（秒）、`async`（仅工具事件；不能改变决定）以及 `onFailure: "block"`。命令与参数中的 `${CLAUDE_PROJECT_DIR}` 会被展开，并设置到 hook 环境变量中。工具 hook 的 stdin 包含 `hook_event_name` 与 `cwd`。其他处理器类型（`http`、`prompt`、`agent`、`mcp_tool`）的条目会被跳过并给出警告。尚未支持的事件与处理器见 issue #2。
+
 ## [1.0.0] — 2026-10-30
 
 ### 新增
