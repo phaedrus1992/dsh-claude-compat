@@ -34,7 +34,7 @@
   "license": "MIT",
   "author": "biedongbin",
   "dependencies": {
-    "yaml": "^2.0.0"
+    "yaml": "2.9.0"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "*",
@@ -60,7 +60,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "check": "node --check src/index.js && node --check src/lib.js && node --check src/mcp.js && node --check src/mcp-sources.js && node --check src/mcp-policy.js && node --check src/mcp-vars.js &&node --check src/hooks.js && node --check src/agents.js && node --check src/plugins.js && node --check src/aliases.js && node --check src/commands.js && node --test test/self-check.test.js test/v040.test.js test/v050.test.js test/v060.test.js test/v070.test.js test/v080.test.js test/v090.test.js test/v092.test.js test/v100.test.js test/mcp-policy.test.js test/mcp-sources.test.js"
+    "check": "node --check src/index.js && node --check src/lib.js && node --check src/mcp.js && node --check src/mcp-sources.js && node --check src/mcp-policy.js && node --check src/mcp-vars.js &&node --check src/hooks.js && node --check src/agents.js && node --check src/plugins.js && node --check src/aliases.js && node --check src/commands.js && node --test test/self-check.test.js test/v040.test.js test/v050.test.js test/v060.test.js test/v070.test.js test/v080.test.js test/v090.test.js test/v092.test.js test/v100.test.js test/mcp-policy.test.js test/mcp-sources.test.js test/mcp-failures.test.js test/mcp-properties.test.js"
   },
   "bin": {
     "dsh-claude-compat-restart": "scripts/dsh-restart.sh"

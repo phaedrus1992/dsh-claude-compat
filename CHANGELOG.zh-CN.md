@@ -7,7 +7,7 @@
 ## [Unreleased]
 
 ### 新增
-- **支持 Claude Code 所有来源的 MCP 服务器。** 插件现在按 Claude Code 的优先级读取 `managed-mcp.json`（独占控制）、`managedMcpServers`，以及 `.claude.json` 中的本地与用户 `mcpServers`。还支持 `${VAR}` 展开、`timeout`、`headersHelper`、`disabledMcpjsonServers`、`disabledMcpServers`，以及 `allowedMcpServers` 与 `deniedMcpServers` 策略。README 列出了 DSH 无法运行的功能。
+- **支持 Claude Code 所有来源的 MCP 服务器。** 插件现在按 Claude Code 的优先级读取 `managed-mcp.json`（独占控制）、`managedMcpServers`，以及 `.claude.json` 中的本地与用户 `mcpServers`。还支持 `${VAR}` 展开、`timeout`、`headersHelper`、`disabledMcpjsonServers`、`disabledMcpServers`，以及 `allowedMcpServers` 与 `deniedMcpServers` 策略。损坏的 managed 文件会关闭服务器，每个被跳过的条目或策略项都会给出告警。README 列出了 DSH 无法运行的功能。
 - **支持 Claude Code 的位置环境变量。** `CLAUDE_CONFIG_DIR`、`CLAUDE_CODE_PLUGIN_CACHE_DIR`、`CLAUDE_CODE_PLUGIN_SEED_DIR`、`CLAUDE_CODE_PLUGIN_DIRS`、`CLAUDE_CODE_PROJECT_DIR_NAME` 现在会像在 Claude Code 中一样改变插件读取的路径。skills、rules、hooks、插件管理与 `/cc-resume` 共用 `src/lib.js` 中的同一组解析函数。
 
 ### 变更
