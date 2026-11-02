@@ -214,17 +214,67 @@ function manifestDirs(manifest, field, installPath) {
   return [];
 }
 
-// Translate a plugin's MCP config into dsh-mcp-client server configs. Returns
-// { servers, warns } (empty when no/invalid mcpServers field). Substitutes the
-// ${CLAUDE_PLUGIN_ROOT} placeholder Claude Code defines for plugin processes.
+// The server map in a plugin's .json file. The file holds an `mcpServers` wrapper,
+// as .mcp.json does, or the server map itself. Returns undefined, with a warning,
+// when the file exists but cannot be read.
+function mapFromFile(path, label, warns) {
+  const raw = readTextSafeSync(path);
+  if (raw === undefined) {
+    warns.push(`mcpServers file not readable: ${label}`);
+    return undefined;
+  }
+  let parsed;
+  try { parsed = JSON.parse(raw); } catch {
+    warns.push(`mcpServers file is not valid JSON: ${label}`);
+    return undefined;
+  }
+  if (!isPlainObject(parsed)) {
+    warns.push(`mcpServers file root must be an object: ${label}`);
+    return undefined;
+  }
+  return isPlainObject(parsed.mcpServers) ? parsed.mcpServers : parsed;
+}
+
+function isPlainObject(value) {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+// One `mcpServers` shape as a server map. Bundles and URLs are not supported.
+function mapFromShape(shape, installPath, warns) {
+  if (typeof shape === 'object' && shape !== null && !Array.isArray(shape)) return shape;
+  if (typeof shape !== 'string') {
+    warns.push('mcpServers entry must be a path or an object, ignored');
+    return undefined;
+  }
+  if (/\.(mcpb|dxt)$/.test(shape) || /^https?:\/\//.test(shape)) {
+    warns.push(`mcpServers ${shape}: MCP bundles and URLs are not supported, skipped`);
+    return undefined;
+  }
+  return mapFromFile(resolve(installPath, shape), shape, warns);
+}
+
+// Translate a plugin's MCP config into dsh-mcp-client server configs. Claude Code
+// reads the plugin's own .mcp.json first, then each `mcpServers` shape in order,
+// and a later name replaces an earlier one. Returns { servers, warns, names }.
+// ${CLAUDE_PLUGIN_ROOT} is replaced with the install path, as Claude Code does.
 export function translatePluginMcp(manifest, installPath, opts = {}) {
-  const ref = manifest?.mcpServers;
-  if (typeof ref !== 'string') return { servers: [], warns: [] };
-  const raw = readTextSafeSync(resolve(installPath, ref));
-  if (raw === undefined) return { servers: [], warns: [`mcpServers file not readable: ${ref}`] };
-  // A replacer function keeps $&, $$ and $' in the install path literal.
-  const substituted = raw.replaceAll('${CLAUDE_PLUGIN_ROOT}', () => installPath);
-  return translateMcpServers(substituted, opts);
+  const warns = [];
+  const maps = [];
+  const rootFile = resolve(installPath, '.mcp.json');
+  if (existsSync(rootFile)) maps.push(mapFromFile(rootFile, '.mcp.json', warns));
+  const declared = manifest?.mcpServers;
+  for (const shape of declared === undefined ? [] : [declared].flat()) {
+    maps.push(mapFromShape(shape, installPath, warns));
+  }
+  const combined = {};
+  for (const map of maps) if (map !== undefined) Object.assign(combined, map);
+  if (Object.keys(combined).length === 0) return { servers: [], warns, names: [] };
+  // The path is escaped for JSON, so a Windows path with backslashes stays valid. The
+  // function replacer keeps `$&` and `$'` in the path from acting as patterns.
+  const root = JSON.stringify(installPath).slice(1, -1);
+  const body = JSON.stringify({ mcpServers: combined }).replaceAll('${CLAUDE_PLUGIN_ROOT}', () => root);
+  const translated = translateMcpServers(body, opts);
+  return { ...translated, warns: [...warns, ...translated.warns] };
 }
 
 function readTextSafeSync(p) { try { return rfs(p, 'utf8'); } catch { return undefined; } }
