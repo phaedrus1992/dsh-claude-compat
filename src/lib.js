@@ -61,6 +61,22 @@ export function resolveClaudePluginsRoot(dir, userDir) {
   return resolveUserClaudeDir(dir);
 }
 
+// Claude Code keeps user-scope and per-project MCP entries in .claude.json. The
+// file sits in the config dir when one applies, and in the home folder otherwise.
+export function claudeJsonPath(dir) {
+  if (dir !== undefined && dir !== null && dir !== '') {
+    return join(resolveUserClaudeDir(dir), '.claude.json');
+  }
+  return join(envAbsolutePath('CLAUDE_CONFIG_DIR') ?? homedir(), '.claude.json');
+}
+
+// The system folder that holds managed-mcp.json and managed-settings.json.
+export function managedClaudeDir(platform = process.platform) {
+  if (platform === 'darwin') return '/Library/Application Support/ClaudeCode';
+  if (platform === 'win32') return 'C:\\Program Files\\ClaudeCode';
+  return '/etc/claude-code';
+}
+
 // Claude Code names a project folder after the working directory, unless
 // CLAUDE_CODE_PROJECT_DIR_NAME overrides the name. The name is one path segment.
 export function claudeProjectsDir(cwd) {
