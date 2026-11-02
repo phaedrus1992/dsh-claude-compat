@@ -7,9 +7,11 @@
 ## [Unreleased]
 
 ### 新增
+- **支持 Claude Code 所有来源的 MCP 服务器。** 插件现在按 Claude Code 的优先级读取 `managed-mcp.json`（独占控制）、`managedMcpServers`，以及 `.claude.json` 中的本地与用户 `mcpServers`。还支持 `${VAR}` 展开、`timeout`、`headersHelper`、`disabledMcpjsonServers`、`disabledMcpServers`，以及 `allowedMcpServers` 与 `deniedMcpServers` 策略。README 列出了 DSH 无法运行的功能。
 - **支持 Claude Code 的位置环境变量。** `CLAUDE_CONFIG_DIR`、`CLAUDE_CODE_PLUGIN_CACHE_DIR`、`CLAUDE_CODE_PLUGIN_SEED_DIR`、`CLAUDE_CODE_PLUGIN_DIRS`、`CLAUDE_CODE_PROJECT_DIR_NAME` 现在会像在 Claude Code 中一样改变插件读取的路径。skills、rules、hooks、插件管理与 `/cc-resume` 共用 `src/lib.js` 中的同一组解析函数。
 
 ### 变更
+- 项目之外也会加载 MCP 服务器，因为 `.claude.json` 与 managed 文件对所有目录生效。与 Claude Code 一致，只有 `url` 而无 `type` 的条目会被跳过。`sse` 与 `ws` 条目被跳过并给出告警。
 - 路径类环境变量为相对路径时，插件不再激活，并输出一行指明变量名的错误。
 - `/cc-plugin` 与插件目录现在遵循配置项 `userClaudeDir` 和 `pluginsRoot`。
 - `userClaudeDir` 与 `pluginsRoot` 不再有默认值。未设置时依次使用对应环境变量、`~/.claude`。显式配置值优先。
